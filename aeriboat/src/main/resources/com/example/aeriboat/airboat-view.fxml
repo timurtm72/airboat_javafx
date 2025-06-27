@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.aeriboat.AirboatController">
+   <top>
+      <VBox spacing="10.0">
+         <children>
+            <!-- Заголовок -->
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="ESP32 Airboat Control System">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            
+            <!-- Панель подключения -->
+            <VBox spacing="10.0" style="-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-background-radius: 8;">
+               <children>
+                  <Label text="Подключение к ESP32">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  
+                  <HBox spacing="15.0" alignment="CENTER_LEFT">
+                     <children>
+                        <Label text="IP:" />
+                        <TextField fx:id="ipField" prefWidth="120.0" promptText="192.168.4.1" />
+                        <Label text="Порт:" />
+                        <TextField fx:id="portField" prefWidth="80.0" promptText="12345" />
+                        <Button fx:id="connectButton" onAction="#onConnectButtonClick" prefWidth="120.0" text="Подключиться" />
+                        <Button fx:id="disconnectButton" onAction="#onDisconnectButtonClick" prefWidth="120.0" text="Отключиться" />
+                        <Circle fx:id="connectionStatus" radius="8.0" stroke="BLACK" strokeType="INSIDE">
+                           <fill>
+                              <Color red="1.0" />
+                           </fill>
+                        </Circle>
+                        <Label fx:id="connectionLabel" text="Отключено" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+   </top>
+   
+   <center>
+      <HBox spacing="20.0">
+         <children>
+            <!-- Левая панель - Управление -->
+            <VBox spacing="20.0" prefWidth="400.0">
+               <children>
+                  <!-- Управление сервоприводом -->
+                  <VBox spacing="10.0" style="-fx-background-color: #e6f3ff; -fx-padding: 15; -fx-background-radius: 8;">
+                     <children>
+                        <Label text="Управление рулем (Сервопривод)">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <HBox spacing="10.0" alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="Угол:" />
+                              <Label fx:id="angleValueLabel" text="90°" minWidth="40.0">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <Slider fx:id="angleSlider" />
+                        <Button fx:id="centerButton" onAction="#onCenterButtonClick" text="Центр (90°)" />
+                     </children>
+                  </VBox>
+                  
+                  <!-- Управление мотором -->
+                  <VBox spacing="10.0" style="-fx-background-color: #ffe6e6; -fx-padding: 15; -fx-background-radius: 8;">
+                     <children>
+                        <Label text="Управление скоростью (BLDC мотор)">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <HBox spacing="10.0" alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="Скорость:" />
+                              <Label fx:id="speedValueLabel" text="0%" minWidth="40.0">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <Slider fx:id="speedSlider" />
+                        <Button fx:id="stopButton" onAction="#onStopButtonClick" style="-fx-background-color: #ff4444; -fx-text-fill: white;" text="СТОП (0%)" />
+                     </children>
+                  </VBox>
+                  
+                  <!-- Лог -->
+                  <VBox spacing="10.0" style="-fx-background-color: #f9f9f9; -fx-padding: 15; -fx-background-radius: 8;">
+                     <children>
+                        <Label text="Лог событий">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <TextArea fx:id="logArea" editable="false" prefHeight="200.0" style="-fx-font-family: 'Courier New'; -fx-font-size: 11;" wrapText="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            
+            <!-- Правая панель - Телеметрия -->
+            <VBox spacing="20.0" prefWidth="350.0">
+               <children>
+                  <!-- Состояние системы -->
+                  <VBox spacing="10.0" style="-fx-background-color: #e6ffe6; -fx-padding: 15; -fx-background-radius: 8;">
+                     <children>
+                        <Label text="Состояние системы">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        
+                        <!-- WiFi сигнал -->
+                        <VBox spacing="5.0">
+                           <children>
+                              <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="WiFi сигнал:" minWidth="100.0" />
+                                    <Label fx:id="wifiSignalLabel" text="-50 dBm" />
+                                 </children>
+                              </HBox>
+                              <ProgressBar fx:id="wifiSignalProgressBar" maxWidth="1.7976931348623157E308" prefHeight="20.0" />
+                           </children>
+                        </VBox>
+                        
+                        <!-- Батарея -->
+                        <VBox spacing="5.0">
+                           <children>
+                              <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="Батарея:" minWidth="100.0" />
+                                    <Label fx:id="batteryVoltageLabel" text="3.7 В" />
+                                 </children>
+                              </HBox>
+                              <ProgressBar fx:id="batteryProgressBar" maxWidth="1.7976931348623157E308" prefHeight="20.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- GPS данные -->
+                  <VBox spacing="10.0" style="-fx-background-color: #fff3e6; -fx-padding: 15; -fx-background-radius: 8;">
+                     <children>
+                        <Label text="GPS Навигация">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        
+                        <GridPane hgap="10.0" vgap="8.0">
+                           <columnConstraints>
+                              <ColumnConstraints minWidth="80.0" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                           <children>
+                              <Label text="Широта:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                              <Label fx:id="latitudeLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                              
+                              <Label text="Долгота:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                              <Label fx:id="longitudeLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              
+                              <Label text="Курс:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                              <Label fx:id="courseLabel" text="0°" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Информация -->
+                  <VBox spacing="10.0" style="-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-background-radius: 8;">
+                     <children>
+                        <Label text="Информация">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label text="• Угол рулевого управления: 0-180°" wrapText="true" />
+                        <Label text="• Скорость мотора: 0-100%" wrapText="true" />
+                        <Label text="• Автоматическое обновление телеметрии каждые 2 сек" wrapText="true" />
+                        <Label text="• UDP протокол на порту 12345" wrapText="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
+         </padding>
+      </HBox>
+   </center>
+</BorderPane> 
